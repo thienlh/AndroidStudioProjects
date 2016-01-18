@@ -5,7 +5,8 @@
              tools:context="android.thienle.masterdetail.DetailFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <EditText
+        android:id="@+id/etInfo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
