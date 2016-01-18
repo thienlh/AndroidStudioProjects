@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Question</string>
+    <!--Question-->
+    <string-array name="questions">
+        <item>Question 1; true</item>
+        <item>Question 2; false</item>
+        <item>Question 3; true</item>
+        <item>Question 4; false</item>
+        <item>Question 5; true</item>
+    </string-array>
+</resources>

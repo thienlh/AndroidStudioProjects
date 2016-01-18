@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Event Note</string>
+    <string name="title_hint">Enter a title for this event</string>
+    <string name="title_label">Title</string>
+    <string name="details_label">Details</string>
+    <string name="details_hint">Enter content of this event</string>
+    <string name="solved_label">Solved</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
