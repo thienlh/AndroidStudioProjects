@@ -24,7 +24,7 @@ public class DetailActivity extends FragmentActivity {
             int position = extras.getInt("index");
             DetailFragment detailFragment = (DetailFragment) getFragmentManager().findFragmentById(R.layout.fragment_detail);
             //  Get the selected items
-            Item item = ItemList.get(this).getItem(position);
+            Item item = ItemList.get(this).get(position);
             //  Update the fragment
             detailFragment.updateView(item);
         }

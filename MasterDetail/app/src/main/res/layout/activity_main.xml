@@ -11,7 +11,7 @@
     tools:context="android.thienle.masterdetail.MainActivity">
 
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/fragment_menu"
         android:name="android.thienle.masterdetail.MenuFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

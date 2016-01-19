@@ -4,15 +4,14 @@ import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.thienle.masterdetail.dummy.DummyContent;
 import android.thienle.masterdetail.dummy.DummyContent.DummyItem;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -60,39 +59,43 @@ public class MenuFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
-
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+//        if (view instanceof RecyclerView) {
+//            Context context = view.getContext();
+//            RecyclerView recyclerView = (RecyclerView) view;
+//            if (mColumnCount <= 1) {
+//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//            } else {
+//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            }
+//            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+//        }
+        setListAdapter(new CustomAdapter(ItemList.get(getActivity()).getList()));
         return view;
     }
 
     //  Call when notify change
     public void notifyChanged() {
-         ((CustomAdapter) getListAdapter()).notifyDataSetChanged(); 
+        ((CustomAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        DetailFragment detailFragment = (DetailFragment) getFragmentManager().findFragmentById(R.id.fragment_detail);  
-        if (detailFragment != null && detailFragment.isInLayout()) {  //  landscape mode 
-            //  Load items and update view 
-            Item item = ItemList.get(getActivity()).getItem(position); 
-            detailFragment.updateView(item); } else { 
-            //  Send intent to Detail Activity, include the position 
-            Intent intent = new Intent(v.getContext(), DetailActivity.class); 
-            Bundle bundle = new Bundle(); bundle.putInt("index", position); 
-            intent.putExtras(bundle); startActivity(intent); 
-        }  
+        DetailFragment detailFragment = (DetailFragment) getFragmentManager().findFragmentById(R.id.fragment_detail);
+
+        if (detailFragment != null && detailFragment.isInLayout()) {    //  landscape mode
+            //  Load items and update view
+            Item item = ItemList.get(getActivity()).get(position);
+            detailFragment.updateView(item);
+        } else {
+            //  Send itent to Detail Activity, with enclosed position
+            Intent intent = new Intent(v.getContext(), DetailActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("index", position);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -125,5 +128,12 @@ public class MenuFragment extends ListFragment {
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
         void onListFragmentInteraction(DummyItem item);
+    }
+
+    private class CustomAdapter extends ArrayAdapter {
+
+        public CustomAdapter(List objects) {
+            super(getActivity(), R.layout.fragment_menu, objects);
+        }
     }
 }

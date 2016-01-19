@@ -1,36 +1,46 @@
 package android.thienle.masterdetail;
 
 
-import android.app.Activity;
+import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by thienlh on 1/18/2016.
  */
 public class ItemList {
-    static List<Item> items;
+    private static ItemList singleton;
+    private List<Item> list = new ArrayList<>();
 
-    public ItemList(List<Item> items) {
-        ItemList.items = items;
+    public ItemList(Context context) {
+        load(context);
     }
 
-    public ItemList() {
+    //  Singleton design pattern
+    public static ItemList get(Context context) {
+        if (singleton == null) {
+            singleton = new ItemList(context);
+        }
+
+        return singleton;
     }
 
-    public static ItemList get(Activity activity) {
-        return new ItemList();
+    private void load(Context context) {
+        Item[] items = {
+                new Item("4.4", "Kit Kat"),
+                new Item("5.0", "Lolipop"),
+                new Item("6.0", "Mashmallow")};
+
+        list = Arrays.asList(items);
     }
 
-    public List<Item> getItems() {
-        return items;
+    public Item get(int location) {
+        return list.get(location);
     }
 
-    public void setItems(List<Item> items) {
-        ItemList.items = items;
-    }
-
-    public Item getItem(int index) {
-        return items.get(index);
+    public List<Item> getList() {
+        return list;
     }
 }
