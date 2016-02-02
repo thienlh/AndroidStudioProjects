@@ -12,22 +12,22 @@ import java.util.List;
  */
 public class ItemList {
     private static ItemList singleton;
-    private List<Item> list = new ArrayList<>();
+    private static List<Item> list = new ArrayList<>();
 
-    public ItemList(Context context) {
-        load(context);
+    public ItemList() {
+        load();
     }
 
     //  Singleton design pattern
-    public static ItemList get(Context context) {
+    private static ItemList get(Context context) {
         if (singleton == null) {
-            singleton = new ItemList(context);
+            singleton = new ItemList();
         }
 
         return singleton;
     }
 
-    private void load(Context context) {
+    private void load() {
         Item[] items = {
                 new Item("4.4", "Kit Kat"),
                 new Item("5.0", "Lolipop"),
@@ -36,11 +36,11 @@ public class ItemList {
         list = Arrays.asList(items);
     }
 
-    public Item get(int location) {
+    public static Item get(int location) {
         return list.get(location);
     }
 
-    public List<Item> getList() {
+    public static List<Item> getList() {
         return list;
     }
 }

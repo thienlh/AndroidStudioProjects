@@ -1,31 +1,26 @@
 package android.thienle.masterdetail;
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.thienle.masterdetail.dummy.DummyContent.DummyItem;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the
  * interface.
  */
 public class MenuFragment extends ListFragment {
-
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -34,43 +29,25 @@ public class MenuFragment extends ListFragment {
     public MenuFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static MenuFragment newInstance(int columnCount) {
-        MenuFragment fragment = new MenuFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
-        // Set the adapter
-//        if (view instanceof RecyclerView) {
-//            Context context = view.getContext();
-//            RecyclerView recyclerView = (RecyclerView) view;
-//            if (mColumnCount <= 1) {
-//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-//            } else {
-//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-//            }
-//            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-//        }
-        setListAdapter(new CustomAdapter(ItemList.get(getActivity()).getList()));
+        ItemList itemList = new ItemList();
+        List<Item> items = itemList.getList();
+        CustomAdapter adapter = new CustomAdapter(items, getActivity());
+        setListAdapter(adapter);
+        DetailFragment detailFragment = (DetailFragment)
+                getFragmentManager().findFragmentById(R.id.fragment_detail);
+        if (detailFragment != null && detailFragment.isInLayout()) { //Landscape
+            Item item = ItemList.get(getSelectedItemPosition());
+            detailFragment.updateView(item);
+        }
         return view;
     }
 
@@ -89,7 +66,7 @@ public class MenuFragment extends ListFragment {
             Item item = ItemList.get(getActivity()).get(position);
             detailFragment.updateView(item);
         } else {
-            //  Send itent to Detail Activity, with enclosed position
+            //  Send intent to Detail Activity, with enclosed position
             Intent intent = new Intent(v.getContext(), DetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putInt("index", position);
@@ -98,42 +75,46 @@ public class MenuFragment extends ListFragment {
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+
+    private class CustomAdapter extends BaseAdapter {
+        private List<Item> items;
+        private Context mContext;
+
+        public CustomAdapter(List<Item> items, Context mContext) {
+            this.items = items;
+            this.mContext = mContext;
         }
-    }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+        @Override
+        public int getCount() {
+            return items.size();
+        }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
-    }
+        @Override
+        public Object getItem(int position) {
+            return items.get(position);
+        }
 
-    private class CustomAdapter extends ArrayAdapter {
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
 
-        public CustomAdapter(List objects) {
-            super(getActivity(), R.layout.fragment_menu, objects);
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater mInflater = (LayoutInflater) mContext
+                        .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                convertView = mInflater.inflate(R.layout.fragment_menu, null);
+            }
+
+            TextView versionName = (TextView) convertView.findViewById(R.id.id);
+            TextView versionInfo = (TextView) convertView.findViewById(R.id.etInfo);
+            Item curr = (Item) getItem(position);
+            versionName.setText(curr.getVersion());
+            versionInfo.setText(curr.getInfo());
+
+            return convertView;
         }
     }
 }
