@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Open Movie Database</string>
+    <string name="hint_message">Enter movie title</string>
+    <string name="button_get">Get movie info</string>
+</resources>
